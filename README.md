@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Vault | Absolute Confidentiality</title>
+    <title>The Vault</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background-color: #030303;
             color: #f0f0f0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -53,11 +53,6 @@
             font-size: 0.95rem;
             resize: none;
             outline: none;
-            transition: all 0.3s ease;
-        }
-        textarea:focus {
-            border-color: #666;
-            background: #161616;
         }
         button {
             width: 100%;
@@ -72,14 +67,6 @@
             font-weight: 700;
             border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        button:active {
-            transform: scale(0.98);
-        }
-        button:hover {
-            background: #ffffff;
-            box-shadow: 0 0 15px rgba(255,255,255,0.2);
         }
         .vault-box {
             display: none;
@@ -98,9 +85,6 @@
             padding: 12px 0;
             line-height: 1.4;
         }
-        .secret-item:last-child {
-            border-bottom: none;
-        }
         .security-note {
             margin-top: 20px;
             text-align: center;
@@ -115,11 +99,8 @@
             margin-top: 15px;
             font-size: 0.75rem;
             color: #666;
-            text-decoration: none;
             cursor: pointer;
-        }
-        .back-btn:hover {
-            color: #fff;
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -133,18 +114,17 @@
 
         <div id="input-section">
             <textarea id="secretInput" placeholder="Deposit your secret into the network..."></textarea>
-            <button onclick="commitSecret()">Commit Secret</button>
+            <button id="commitBtn" type="button">Commit Secret</button>
             <div class="security-note">End-to-End Anonymity • Zero Traces</div>
         </div>
 
         <div id="vault-section" class="vault-box">
             <div id="secretsList"></div>
-            <a class="back-btn" onclick="resetView()">← Deposit another secret</a>
+            <a class="back-btn" id="backBtn">← Deposit another secret</a>
         </div>
     </div>
 
     <script>
-        // الأسرار الافتتاحية للموقع
         let secrets = JSON.parse(localStorage.getItem('vault_secrets')) || [
             "I was a lead engineer for a state-sponsored cyber unit. In 2023, we successfully embedded an untraceable kill-switch into the firmware of the global banking infrastructure.",
             "Everyone thinks I am working hard to build a successful future, but the dark truth is I am doing this purely out of spite, just to prove every single person who abandoned me that they were worthless."
@@ -153,36 +133,33 @@
         function renderSecrets() {
             const listContainer = document.getElementById('secretsList');
             listContainer.innerHTML = '';
-            secrets.forEach(secret => {
+            secrets.forEach(function(secret) {
                 const div = document.createElement('div');
                 div.className = 'secret-item';
-                div.textContent = `"${secret}"`;
+                div.textContent = '"' + secret + '"';
                 listContainer.appendChild(div);
             });
         }
 
-        function commitSecret() {
+        document.getElementById('commitBtn').addEventListener('click', function() {
             const input = document.getElementById('secretInput');
             const val = input.value.trim();
-            if(val.length < 4) {
-                alert('Please enter a valid secret.');
+            if(val.length < 3) {
+                alert('Please enter a secret first.');
                 return;
             }
-            // إضافة السر الجديد للقائمة وحفظه
             secrets.unshift(val);
             localStorage.setItem('vault_secrets', JSON.stringify(secrets));
-            
             input.value = '';
             renderSecrets();
-            
             document.getElementById('input-section').style.display = 'none';
             document.getElementById('vault-section').style.display = 'block';
-        }
+        });
 
-        function resetView() {
+        document.getElementById('backBtn').addEventListener('click', function() {
             document.getElementById('vault-section').style.display = 'none';
             document.getElementById('input-section').style.display = 'block';
-        }
+        });
 
         renderSecrets();
     </script>
