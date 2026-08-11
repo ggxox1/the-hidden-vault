@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Vault</title>
+    <title>The Vault | Anonymous Network</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -13,156 +13,267 @@
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: center;
             padding: 20px;
         }
-        .vault-card {
+        .container {
             width: 100%;
-            max-width: 440px;
+            max-width: 500px;
+        }
+        .profile-bar {
+            background: #0a0a0a;
+            border: 1px solid #1f1f1f;
+            padding: 12px 18px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 0.85rem;
+        }
+        .profile-bar span { color: #888; }
+        .profile-bar strong { color: #fff; cursor: pointer; }
+        
+        .post-card, .feed-card {
             background: #0a0a0a;
             border: 1px solid #1f1f1f;
             border-radius: 12px;
-            padding: 35px 25px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        h1 {
-            font-size: 1.1rem;
-            letter-spacing: 5px;
-            text-transform: uppercase;
-            color: #ffffff;
-            font-weight: 400;
-            margin-bottom: 8px;
-        }
-        .subtitle {
-            font-size: 0.8rem;
-            color: #777;
-            letter-spacing: 1px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
         textarea {
             width: 100%;
-            height: 130px;
+            height: 100px;
             background: #121212;
             border: 1px solid #262626;
             border-radius: 8px;
             color: #fff;
-            padding: 15px;
+            padding: 12px;
             font-size: 0.95rem;
             resize: none;
             outline: none;
+            margin-bottom: 12px;
         }
-        button {
+        button.primary-btn {
             width: 100%;
-            margin-top: 20px;
             background: #f5f5f5;
             color: #0a0a0a;
             border: none;
-            padding: 14px;
-            font-size: 0.85rem;
-            letter-spacing: 3px;
+            padding: 12px;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
             text-transform: uppercase;
             font-weight: 700;
             border-radius: 8px;
             cursor: pointer;
         }
-        .vault-box {
-            display: none;
-            margin-top: 20px;
-            background: #0f0f0f;
-            border: 1px solid #222;
-            padding: 15px;
-            border-radius: 8px;
-            max-height: 250px;
-            overflow-y: auto;
+        .feed-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #777;
+            margin-bottom: 10px;
         }
-        .secret-item {
+        .feed-author { color: #ccc; font-weight: 600; }
+        .feed-text {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #e0e0e0;
+            margin-bottom: 15px;
+            word-break: break-word;
+        }
+        .feed-actions {
+            display: flex;
+            gap: 20px;
             font-size: 0.85rem;
-            color: #b0b0b0;
-            border-bottom: 1px solid #1a1a1a;
-            padding: 12px 0;
-            line-height: 1.4;
+            color: #888;
+            border-top: 1px solid #161616;
+            padding-top: 12px;
         }
-        .security-note {
-            margin-top: 20px;
-            text-align: center;
-            font-size: 0.72rem;
-            color: #555;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-        .back-btn {
-            display: block;
-            text-align: center;
-            margin-top: 15px;
-            font-size: 0.75rem;
-            color: #666;
+        .action-btn {
+            background: none;
+            border: none;
+            color: #888;
             cursor: pointer;
-            text-decoration: underline;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.85rem;
+        }
+        .action-btn:hover { color: #fff; }
+        .comments-section {
+            margin-top: 12px;
+            border-top: 1px dashed #1a1a1a;
+            padding-top: 10px;
+            display: none;
+        }
+        .comment-item {
+            font-size: 0.8rem;
+            color: #aaa;
+            background: #111;
+            padding: 8px 10px;
+            border-radius: 6px;
+            margin-bottom: 6px;
+        }
+        .comment-input-box {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .comment-input-box input {
+            flex: 1;
+            background: #111;
+            border: 1px solid #222;
+            border-radius: 6px;
+            padding: 8px;
+            color: #fff;
+            font-size: 0.8rem;
+            outline: none;
+        }
+        .comment-input-box button {
+            background: #333;
+            color: #fff;
+            border: none;
+            padding: 0 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
         }
     </style>
 </head>
 <body>
 
-    <div class="vault-card">
-        <div class="header">
-            <h1>The Vault</h1>
-            <div class="subtitle">Encrypted Anonymous Transmission</div>
+    <div class="container">
+        <!-- شريط الملف الشخصي والاسم المستعار -->
+        <div class="profile-bar">
+            <span>Alias: <strong id="currentAlias" onclick="changeAlias()">Anonymous</strong></span>
+            <span style="font-size: 0.75rem; color: #555;">Click alias to edit</span>
         </div>
 
-        <div id="input-section">
-            <textarea id="secretInput" placeholder="Deposit your secret into the network..."></textarea>
-            <button id="commitBtn" type="button">Commit Secret</button>
-            <div class="security-note">End-to-End Anonymity • Zero Traces</div>
+        <!-- صندوق نشر السر -->
+        <div class="post-card">
+            <textarea id="secretInput" placeholder="Broadcast your secret to the network..."></textarea>
+            <button class="primary-btn" onclick="publishSecret()">Publish Secret</button>
         </div>
 
-        <div id="vault-section" class="vault-box">
-            <div id="secretsList"></div>
-            <a class="back-btn" id="backBtn">← Deposit another secret</a>
-        </div>
+        <!-- قائمة الأسرار المنشورة (Timeline) -->
+        <div id="feedContainer"></div>
     </div>
 
     <script>
-        let secrets = JSON.parse(localStorage.getItem('vault_secrets')) || [
-            "I was a lead engineer for a state-sponsored cyber unit. In 2023, we successfully embedded an untraceable kill-switch into the firmware of the global banking infrastructure.",
-            "Everyone thinks I am working hard to build a successful future, but the dark truth is I am doing this purely out of spite, just to prove every single person who abandoned me that they were worthless."
+        let alias = localStorage.getItem('vault_alias') || 'Shadow_' + Math.floor(Math.random() * 9000 + 1000);
+        document.getElementById('currentAlias').textContent = alias;
+
+        let posts = JSON.parse(localStorage.getItem('vault_posts')) || [
+            {
+                id: 1,
+                author: "Agent_07",
+                text: "I was a lead engineer for a state-sponsored cyber unit. In 2023, we successfully embedded an untraceable kill-switch into the firmware of the global banking infrastructure.",
+                likes: 14,
+                comments: [{author: "System_X", text: "This explains a lot about the recent outages."}]
+            },
+            {
+                id: 2,
+                author: "Ghost_Writer",
+                text: "Everyone thinks I am working hard to build a successful future, but the dark truth is I am doing this purely out of spite.",
+                likes: 29,
+                comments: []
+            }
         ];
 
-        function renderSecrets() {
-            const listContainer = document.getElementById('secretsList');
-            listContainer.innerHTML = '';
-            secrets.forEach(function(secret) {
-                const div = document.createElement('div');
-                div.className = 'secret-item';
-                div.textContent = '"' + secret + '"';
-                listContainer.appendChild(div);
+        function changeAlias() {
+            let newAlias = prompt("Enter your new pseudonymous alias:", alias);
+            if(newAlias && newAlias.trim().length > 0) {
+                alias = newAlias.trim();
+                localStorage.setItem('vault_alias', alias);
+                document.getElementById('currentAlias').textContent = alias;
+            }
+        }
+
+        function saveAndRender() {
+            localStorage.setItem('vault_posts', JSON.stringify(posts));
+            renderFeed();
+        }
+
+        function publishSecret() {
+            const text = document.getElementById('secretInput').value.trim();
+            if(text.length < 3) {
+                alert('Secret is too short.');
+                return;
+            }
+            const newPost = {
+                id: Date.now(),
+                author: alias,
+                text: text,
+                likes: 0,
+                comments: []
+            };
+            posts.unshift(newPost);
+            document.getElementById('secretInput').value = '';
+            saveAndRender();
+        }
+
+        function likePost(id) {
+            const post = posts.find(p => p.id === id);
+            if(post) {
+                post.likes++;
+                saveAndRender();
+            }
+        }
+
+        function toggleComments(id) {
+            const box = document.getElementById('comments-' + id);
+            box.style.display = box.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function addComment(id) {
+            const input = document.getElementById('comment-input-' + id);
+            const text = input.value.trim();
+            if(!text) return;
+            const post = posts.find(p => p.id === id);
+            if(post) {
+                post.comments.push({ author: alias, text: text });
+                input.value = '';
+                saveAndRender();
+                document.getElementById('comments-' + id).style.display = 'block';
+            }
+        }
+
+        function renderFeed() {
+            const container = document.getElementById('feedContainer');
+            container.innerHTML = '';
+            
+            posts.forEach(post => {
+                let commentsHtml = '';
+                post.comments.forEach(c => {
+                    commentsHtml += `<div class="comment-item"><strong>@${c.author}:</strong> ${c.text}</div>`;
+                });
+
+                const card = document.createElement('div');
+                card.className = 'feed-card';
+                card.innerHTML = `
+                    <div class="feed-header">
+                        <span class="feed-author">@${post.author}</span>
+                        <span>Encrypted</span>
+                    </div>
+                    <div class="feed-text">"${post.text}"</div>
+                    <div class="feed-actions">
+                        <button class="action-btn" onclick="likePost(${post.id})">❤️ ${post.likes}</button>
+                        <button class="action-btn" onclick="toggleComments(${post.id})">💬 ${post.comments.length} Comments</button>
+                    </div>
+                    <div id="comments-${post.id}" class="comments-section">
+                        ${commentsHtml}
+                        <div class="comment-input-box">
+                            <input type="text" id="comment-input-${post.id}" placeholder="Reply anonymously...">
+                            <button onclick="addComment(${post.id})">Send</button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
             });
         }
 
-        document.getElementById('commitBtn').addEventListener('click', function() {
-            const input = document.getElementById('secretInput');
-            const val = input.value.trim();
-            if(val.length < 3) {
-                alert('Please enter a secret first.');
-                return;
-            }
-            secrets.unshift(val);
-            localStorage.setItem('vault_secrets', JSON.stringify(secrets));
-            input.value = '';
-            renderSecrets();
-            document.getElementById('input-section').style.display = 'none';
-            document.getElementById('vault-section').style.display = 'block';
-        });
-
-        document.getElementById('backBtn').addEventListener('click', function() {
-            document.getElementById('vault-section').style.display = 'none';
-            document.getElementById('input-section').style.display = 'block';
-        });
-
-        renderSecrets();
+        renderFeed();
     </script>
-
 </body>
 </html>
