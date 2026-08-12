@@ -38,7 +38,6 @@
             position: relative;
         }
 
-        /* شريط اللغات العلوي */
         .top-bar {
             display: flex;
             justify-content: space-between;
@@ -70,7 +69,6 @@
         }
         .lang-btn.active, .lang-btn:hover { color: #fff; border-color: var(--accent-cyan); background: #1a1a26; }
 
-        /* الشاشات */
         .screen { display: none; }
         .screen.active { display: block; }
 
@@ -87,7 +85,6 @@
             line-height: 1.5;
         }
 
-        /* أزرار تسجيل الدخول الاجتماعي */
         .social-login-grid {
             display: flex;
             flex-direction: column;
@@ -111,7 +108,6 @@
         }
         .social-btn:hover { border-color: var(--border-hover); background: #161622; transform: translateY(-2px); }
 
-        /* النماذج وحقول الإدخال */
         .form-group {
             margin-bottom: 18px;
             text-align: left;
@@ -136,7 +132,6 @@
         }
         input:focus, select:focus { border-color: var(--accent-cyan); box-shadow: 0 0 15px rgba(0, 240, 255, 0.15); }
 
-        /* اختيار الأستاذ (Alex / Alexa) */
         .tutors-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -173,7 +168,6 @@
         }
         .btn-main:hover { background: #d0d0d8; transform: translateY(-2px); }
 
-        /* واجهة المكالمة الصوتية */
         .call-container {
             text-align: center;
             padding: 10px 0;
@@ -260,7 +254,6 @@
 
     <div class="container">
         
-        <!-- شريط علوي -->
         <div class="top-bar">
             <div class="brand-logo">Polyglot AI</div>
             <div class="lang-options">
@@ -270,7 +263,6 @@
             </div>
         </div>
 
-        <!-- 1. شاشة تسجيل الدخول -->
         <div class="screen active" id="screenLogin">
             <h2 id="t-login-title">Welcome to Neural Academy</h2>
             <p class="desc" id="t-login-desc">Sign in instantly to start your voice-immersed language journey.</p>
@@ -287,7 +279,6 @@
             </div>
         </div>
 
-        <!-- 2. شاشة الإعداد والبروفايل -->
         <div class="screen" id="screenProfile">
             <h2 id="t-prof-title">Personalize Your Teacher</h2>
             <p class="desc" id="t-prof-desc">Tell us your goals so your personal AI professor can customize the conversation.</p>
@@ -338,7 +329,6 @@
             <button class="btn-main" onclick="startCallSession()" id="t-start-btn">Start Voice Session</button>
         </div>
 
-        <!-- 3. شاشة المكالمة الصوتية المباشرة -->
         <div class="screen" id="screenCall">
             <div class="call-container">
                 <div class="call-status" id="callStatusIndicator">Connected // Live AI Tutor</div>
@@ -361,7 +351,6 @@
     </div>
 
     <script>
-        // نصوص اللغات المتعددة لواجهة الموقع
         const uiText = {
             en: {
                 loginTitle: "Welcome to Neural Academy",
@@ -433,6 +422,18 @@
         let userData = { name: '', age: '', lang: 'en', level: 'beginner' };
         let recognition = null;
         let isListening = false;
+        let systemVoices = [];
+
+        // تحميل الأصوات المتاحة في المتصفح تلقائياً فور توفرها
+        function loadVoices() {
+            if ('speechSynthesis' in window) {
+                systemVoices = window.speechSynthesis.getVoices();
+            }
+        }
+        loadVoices();
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.onvoiceschanged = loadVoices;
+        }
 
         function changeAppLang(lang) {
             currentAppLang = lang;
@@ -489,14 +490,13 @@
             document.getElementById('screenProfile').classList.remove('active');
             document.getElementById('screenCall').classList.add('active');
 
-            // ترحيب أولي صوتي ونصي من الأستاذ (Alex / Alexa)
             let welcomeText = "";
             if(userData.lang === 'en') {
                 welcomeText = `Hello ${userData.name}! I am ${selectedTutor}, your personal AI language tutor. Let's start practicing English right now! Tell me, how was your day?`;
             } else if(userData.lang === 'fr') {
                 welcomeText = `Bonjour ${userData.name}! Je suis ${selectedTutor}, votre professeur. Commençons à parler français. Comment s'est passée votre journée?`;
             } else {
-                welcomeText = `¡Hola ${userData.name}! Soy ${selectedTutor}, tu profesor de español. ¡Empecemos a conversar!`;
+                welcomeText = `¡Hola ${userData.name}! Soy ${selectedTutor}, tu profesor. ¡Empecemos a conversar!`;
             }
 
             appendTranscript(selectedTutor, welcomeText);
@@ -508,17 +508,40 @@
                 window.speechSynthesis.cancel();
                 let utterance = new SpeechSynthesisUtterance(text);
                 utterance.lang = langCode === 'en' ? 'en-US' : langCode === 'fr' ? 'fr-FR' : 'es-ES';
+                utterance.rate = 0.95; // سرعة هادئة وطبيعية للتعلم
+                utterance.pitch = selectedTutor === 'Alexa' ? 1.2 : 0.8; // نبرة أعلى للإناث وأعمق للذكور
+
+                if (systemVoices.length === 0) {
+                    loadVoices();
+                }
+
+                let filtered = systemVoices.filter(v => v.lang.startsWith(langCode) || v.lang.replace('_','-').startsWith(langCode));
                 
-                // اختيار صوت ذكي تناسبي حسب اختيار المستخدم (رجل أو امرأة)
-                let voices = window.speechSynthesis.getVoices();
-                if(voices.length > 0) {
-                    let filtered = voices.filter(v => v.lang.startsWith(langCode));
-                    if(selectedTutor === 'Alexa') {
-                        let femaleVoice = filtered.find(v => v.name.toLowerCase().includes('female') || v.name.toLowerCase().includes('zira') || v.name.toLowerCase().includes('google'));
-                        if(femaleVoice) utterance.voice = femaleVoice;
+                if (filtered.length > 0) {
+                    if (selectedTutor === 'Alexa') {
+                        // البحث عن صوت نسائي بأسماء شائعة في المتصفحات
+                        let femaleVoice = filtered.find(v => 
+                            v.name.toLowerCase().includes('female') || 
+                            v.name.toLowerCase().includes('zira') || 
+                            v.name.toLowerCase().includes('samantha') || 
+                            v.name.toLowerCase().includes('victoria') || 
+                            v.name.toLowerCase().includes('karen') || 
+                            v.name.toLowerCase().includes('amelie') ||
+                            v.name.toLowerCase().includes('google uk english female')
+                        );
+                        if (femaleVoice) utterance.voice = femaleVoice;
+                        else if (filtered[1]) utterance.voice = filtered[1]; // غالباً الصوت الثاني يكون نسائياً في النظام
                     } else {
-                        let maleVoice = filtered.find(v => v.name.toLowerCase().includes('male') || v.name.toLowerCase().includes('david') || v.name.toLowerCase().includes('george'));
-                        if(maleVoice) utterance.voice = maleVoice;
+                        // البحث عن صوت رجالي
+                        let maleVoice = filtered.find(v => 
+                            v.name.toLowerCase().includes('male') || 
+                            v.name.toLowerCase().includes('david') || 
+                            v.name.toLowerCase().includes('alex') || 
+                            v.name.toLowerCase().includes('daniel') || 
+                            v.name.toLowerCase().includes('thomas')
+                        );
+                        if (maleVoice) utterance.voice = maleVoice;
+                        else if (filtered[0]) utterance.voice = filtered[0];
                     }
                 }
 
@@ -533,7 +556,7 @@
         function toggleSpeechRecognition() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRecognition) {
-                alert("Speech recognition is not supported on this browser. Try Chrome or Safari.");
+                alert("Speech recognition is not supported on this browser.");
                 return;
             }
 
@@ -561,13 +584,8 @@
                 processAIResponse(speechResult);
             };
 
-            recognition.onerror = () => {
-                stopMicUI();
-            };
-
-            recognition.onend = () => {
-                stopMicUI();
-            };
+            recognition.onerror = () => { stopMicUI(); };
+            recognition.onend = () => { stopMicUI(); };
 
             recognition.start();
         }
@@ -580,7 +598,6 @@
         }
 
         function processAIResponse(userInput) {
-            // محاكاة رد ذكي وواقعي من الأستاذ (Alex / Alexa) لتصحيح النطق وتشجيع المحادثة
             let reply = "";
             let lower = userInput.toLowerCase();
 
@@ -588,12 +605,12 @@
                 if(lower.includes('good') || lower.includes('fine') || lower.includes('great')) {
                     reply = `That's wonderful, ${userData.name}! Your pronunciation is getting better. Can you tell me what your favorite hobby is?`;
                 } else {
-                    reply = `I heard you say "${userInput}". Excellent effort! Remember to practice this phrase smoothly. What else would you like to discuss today?`;
+                    reply = `I heard you say "${userInput}". Excellent effort! What else would you like to discuss today?`;
                 }
             } else if(userData.lang === 'fr') {
-                reply = `C'est très bien dit, ${userData.name}! Continuez ainsi. Parlons de vos projets pour demain?`;
+                reply = `C'est très bien dit, ${userData.name}! Parlons de vos projets pour demain?`;
             } else {
-                reply = `¡Excelente, ${userData.name}! Tu pronunciación es muy buena. Cuéntame más.`;
+                reply = `¡Excelente, ${userData.name}! Cuéntame más sobre lo que te gusta hacer.`;
             }
 
             appendTranscript(selectedTutor, reply);
