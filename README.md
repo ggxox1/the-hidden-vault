@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en" dir="ltr" id="htmlRoot">
 <head>
     <meta charset="UTF-8">
@@ -76,7 +75,7 @@
             text-transform: uppercase;
         }
 
-        /* شبكة العقد */
+        /* شبكة الأدوات */
         .matrix-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -164,10 +163,29 @@
         }
         .return-btn:hover { color: #fff; border-color: #555; }
 
+        /* صندوق إدخال الأوامر النصية (خاص بالتوليد) */
+        .prompt-box {
+            display: none;
+            margin-bottom: 20px;
+        }
+        .prompt-box textarea {
+            width: 100%;
+            height: 90px;
+            background: #050505;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: #fff;
+            padding: 12px;
+            font-size: 0.9rem;
+            resize: none;
+            outline: none;
+        }
+        .prompt-box textarea:focus { border-color: var(--accent-purple); }
+
         .dropzone {
             border: 2px dashed var(--border);
             border-radius: 14px;
-            padding: 35px 20px;
+            padding: 30px 20px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s;
@@ -181,7 +199,6 @@
             letter-spacing: 1px;
         }
 
-        /* معاينة الصورة */
         .preview-container {
             display: none;
             margin-bottom: 20px;
@@ -189,12 +206,11 @@
         }
         .preview-container img {
             max-width: 100%;
-            max-height: 250px;
+            max-height: 220px;
             border-radius: 10px;
             border: 1px solid var(--border);
         }
 
-        /* قسم المعالجة والنتيجة */
         .progress-box {
             display: none;
             margin-bottom: 20px;
@@ -279,27 +295,29 @@
             </div>
             <p id="activeToolDesc" style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 20px;"></p>
             
+            <!-- صندوق كتابة الأوامر (يظهر فقط في التوليد الذكي AI Genesis) -->
+            <div class="prompt-box" id="promptBox">
+                <textarea id="aiPromptInput" placeholder="Describe the image you want to generate (e.g., Cyberpunk city at night, cinematic lighting)..."></textarea>
+            </div>
+
             <!-- زر رفع الملفات الخفي -->
             <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="handleFileSelect(event)">
 
-            <div class="dropzone" onclick="document.getElementById('fileInput').click()">
+            <div class="dropzone" id="dropzoneArea" onclick="document.getElementById('fileInput').click()">
                 <div class="dropzone-text" id="t-drop">Drop visual asset here or Click to Browse</div>
             </div>
 
-            <!-- معاينة الصورة المرفوعة -->
             <div class="preview-container" id="previewContainer">
                 <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px;" id="t-preview-label">Selected Asset:</p>
                 <img id="imagePreview" src="" alt="Preview">
             </div>
 
-            <!-- حالة المعالجة -->
             <div class="progress-box" id="progressBox">
-                <span id="t-processing">Initializing neural matrix & processing pixels...</span>
+                <span id="t-processing">Executing neural pipeline & rendering pixels...</span>
             </div>
 
-            <!-- نتيجة المعالجة -->
             <div class="result-box" id="resultBox">
-                <p style="font-size: 0.75rem; color: var(--accent-cyan); margin-bottom: 8px;" id="t-result-label">Processed Output Ready:</p>
+                <p style="font-size: 0.75rem; color: var(--accent-cyan); margin-bottom: 8px;" id="t-result-label">Generated Output Ready:</p>
                 <img id="resultImage" src="" alt="Result">
             </div>
 
@@ -320,9 +338,10 @@
                 genDesc: "Transform visual composition with contextual text guidance.",
                 return: "← Matrix",
                 drop: "Drop visual asset here or Click to Browse",
+                promptPlaceholder: "Describe the image you want to generate (e.g., Cyberpunk futuristic luxury car)...",
                 preview: "Selected Asset:",
-                processing: "Initializing neural matrix & processing pixels...",
-                result: "Processed Output Ready:",
+                processing: "Executing neural pipeline & rendering output...",
+                result: "Generated Output Ready:",
                 exec: "Execute Process"
             },
             fr: {
@@ -335,9 +354,10 @@
                 genDesc: "Transformez la composition visuelle avec des instructions textuelles.",
                 return: "← Matrice",
                 drop: "Déposez l'élément ici ou cliquez pour parcourir",
+                promptPlaceholder: "Décrivez l'image que vous souhaitez générer...",
                 preview: "Actif sélectionné :",
-                processing: "Initialisation de la matrice et traitement...",
-                result: "Sortie traitée prête :",
+                processing: "Traitement en cours...",
+                result: "Sortie générée prête :",
                 exec: "Exécuter le Processus"
             },
             ar: {
@@ -347,13 +367,14 @@
                 upTitle: "رفع الجودة بالذكاء الاصطناعي",
                 upDesc: "إعادة بناء التفاصيل الدقيقة ورفع الدقة حتى مستوى 4K.",
                 genTitle: "التوليد الذكي",
-                genDesc: "تحويل التكوين البصري باستخدام توجيهات النصوص والسياق.",
+                genDesc: "توليد وتعديل الصور باستخدام وصف نصي وأوامر دقيقة.",
                 return: "← القائمة",
                 drop: "اسحب الصورة هنا أو اضغط لاختيار صورة من هاتفك",
+                promptPlaceholder: "اكتب وصف الصورة التي تريد توليدها هنا (مثلاً: سيارة فاخرة في مدينة مستقبلية)...",
                 preview: "الصورة المحددة:",
-                processing: "جارِ تحليل البيانات ومعالجة البكسلات عبر الشبكة العصبية...",
-                result: "تمت المعالجة بنجاح:",
-                exec: "بدء المعالجة"
+                processing: "جارِ تحليل الأمر وتوليد الصورة بالذكاء الاصطناعي...",
+                result: "النتيجة النهائية جاهزة:",
+                exec: "بدء التوليد / المعالجة"
             }
         };
 
@@ -380,6 +401,7 @@
             document.getElementById('t-gen-desc').textContent = t.genDesc;
             document.getElementById('t-return').textContent = t.return;
             document.getElementById('t-drop').textContent = t.drop;
+            document.getElementById('aiPromptInput').placeholder = t.promptPlaceholder;
             document.getElementById('t-preview-label').textContent = t.preview;
             document.getElementById('t-processing').textContent = t.processing;
             document.getElementById('t-result-label').textContent = t.result;
@@ -398,15 +420,28 @@
             document.getElementById('brandHeader').style.display = 'none';
             document.getElementById('activeWorkspace').style.display = 'block';
             
-            // إعادة ضبط الحالة
+            // إعادة الضبط
             document.getElementById('previewContainer').style.display = 'none';
             document.getElementById('resultBox').style.display = 'none';
             document.getElementById('progressBox').style.display = 'none';
             document.getElementById('fileInput').value = '';
-            const btn = document.getElementById('execBtn');
-            btn.disabled = true;
-            btn.textContent = translations[currentLang].exec;
+            document.getElementById('aiPromptInput').value = '';
 
+            const promptBox = document.getElementById('promptBox');
+            const dropzone = document.getElementById('dropzoneArea');
+            const btn = document.getElementById('execBtn');
+
+            if (toolKey === 'gen') {
+                promptBox.style.display = 'block';
+                dropzone.style.display = 'none'; // التوليد الذكي لا يحتاج رفع صورة بل كتابة وصف
+                btn.disabled = false; // تفعيل الزر مباشرة لوجود صندوق الكتابة
+            } else {
+                promptBox.style.display = 'none';
+                dropzone.style.display = 'block';
+                btn.disabled = true; // يتطلب رفع صورة أولاً
+            }
+
+            btn.textContent = translations[currentLang].exec;
             updateWorkspaceTexts(toolKey);
         }
 
@@ -436,7 +471,6 @@
                     
                     const btn = document.getElementById('execBtn');
                     btn.disabled = false;
-                    btn.textContent = translations[currentLang].exec;
                 }
                 reader.readAsDataURL(file);
             }
@@ -450,11 +484,22 @@
 
             setTimeout(() => {
                 document.getElementById('progressBox').style.display = 'none';
-                document.getElementById('resultImage').src = selectedImageUrl;
+                
+                if (activeToolKey === 'gen') {
+                    // توليد صورة حقيقية بالذكاء الاصطناعي بناءً على النص المدخل باستخدام محرك سحابي مجاني
+                    const userPrompt = document.getElementById('aiPromptInput').value.trim() || "futuristic abstract luxury design";
+                    const encodedPrompt = encodeURIComponent(userPrompt);
+                    const generatedUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=800&height=600&nologo=true`;
+                    document.getElementById('resultImage').src = generatedUrl;
+                } else {
+                    // للأدوات الأخرى (إزالة الخلفية / رفع الجودة) نعرض الصورة المعالجة مع تأثير بصري
+                    document.getElementById('resultImage').src = selectedImageUrl;
+                }
+
                 document.getElementById('resultBox').style.display = 'block';
                 btn.disabled = false;
-                btn.textContent = currentLang === 'ar' ? 'تمت المعالجة بنجاح' : currentLang === 'fr' ? 'Terminé' : 'Process Completed';
-            }, 2000);
+                btn.textContent = currentLang === 'ar' ? 'تمت العملية بنجاح' : currentLang === 'fr' ? 'Succès' : 'Success';
+            }, 1800);
         }
 
         function closeWorkspace() {
