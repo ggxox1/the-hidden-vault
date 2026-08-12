@@ -2,18 +2,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NeuraFrame // AI Visual Matrix</title>
+    <title>Polyglot AI // Neural Language Academy</title>
     <style>
         :root {
-            --bg: #030303;
-            --card-bg: #080808;
-            --border: #181818;
-            --border-hover: #333333;
-            --text-main: #f0f0f0;
-            --text-muted: #666666;
+            --bg: #030305;
+            --card-bg: #0a0a0f;
+            --border: #1a1a24;
+            --border-hover: #3a3a50;
+            --text-main: #f0f0f5;
+            --text-muted: #707085;
             --accent-cyan: #00f0ff;
-            --accent-gold: #ffb700;
-            --accent-purple: #b000ff;
+            --accent-purple: #9d4edd;
+            --accent-pink: #ff007f;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; outline: none; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         body {
@@ -29,484 +29,591 @@
         }
         .container {
             width: 100%;
-            max-width: 850px;
-            text-align: center;
-        }
-        
-        /* شريط اللغات */
-        .lang-bar {
-            display: flex;
-            justify-content: flex-end;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-        .lang-btn {
+            max-width: 650px;
             background: var(--card-bg);
             border: 1px solid var(--border);
-            color: var(--text-muted);
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .lang-btn:hover, .lang-btn.active {
-            color: #fff;
-            border-color: #555;
-            background: #111;
+            border-radius: 24px;
+            padding: 35px;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.9);
+            position: relative;
         }
 
-        /* الهيدر */
-        .brand-header {
-            margin-bottom: 35px;
-        }
-        .brand-header h1 {
-            font-size: clamp(2rem, 4vw, 2.5rem);
-            letter-spacing: 6px;
-            text-transform: uppercase;
-            font-weight: 300;
-            color: #ffffff;
-            margin-bottom: 8px;
-        }
-        .brand-header p {
-            font-size: clamp(0.75rem, 2vw, 0.85rem);
-            color: var(--text-muted);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        /* شبكة الأدوات */
-        .matrix-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 20px;
-            justify-content: center;
-        }
-        .matrix-node {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 30px 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .matrix-node:hover {
-            transform: translateY(-4px);
-            border-color: var(--border-hover);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
-        }
-        
-        .core-orb {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            margin: 0 auto 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.3rem;
-            transition: transform 0.3s;
-        }
-        .matrix-node:hover .core-orb { transform: scale(1.1); }
-
-        .orb-cyan { background: radial-gradient(circle, var(--accent-cyan) 0%, #005f73 100%); box-shadow: 0 0 20px rgba(0, 240, 255, 0.25); }
-        .orb-gold { background: radial-gradient(circle, var(--accent-gold) 0%, #ca6702 100%); box-shadow: 0 0 20px rgba(255, 183, 0, 0.25); }
-        .orb-purple { background: radial-gradient(circle, var(--accent-purple) 0%, #3a0ca3 100%); box-shadow: 0 0 20px rgba(176, 0, 255, 0.25); }
-
-        .node-title {
-            font-size: 0.9rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #fff;
-        }
-        .node-desc {
-            font-size: 0.78rem;
-            color: var(--text-muted);
-            line-height: 1.5;
-        }
-
-        /* مساحة العمل */
-        .workspace {
-            display: none;
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 30px;
-            text-align: start;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.9);
-        }
-        .workspace-top {
+        /* شريط اللغات العلوي */
+        .top-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             border-bottom: 1px solid var(--border);
-            padding-bottom: 12px;
+            padding-bottom: 15px;
         }
-        .workspace-name {
-            font-size: 0.95rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: #fff;
-        }
-        .return-btn {
-            background: none;
-            border: 1px solid var(--border);
-            color: var(--text-muted);
-            padding: 6px 14px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.75rem;
-            transition: all 0.3s;
-        }
-        .return-btn:hover { color: #fff; border-color: #555; }
-
-        /* صندوق إدخال الأوامر النصية (خاص بالتوليد) */
-        .prompt-box {
-            display: none;
-            margin-bottom: 20px;
-        }
-        .prompt-box textarea {
-            width: 100%;
-            height: 90px;
-            background: #050505;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            color: #fff;
-            padding: 12px;
-            font-size: 0.9rem;
-            resize: none;
-            outline: none;
-        }
-        .prompt-box textarea:focus { border-color: var(--accent-purple); }
-
-        .dropzone {
-            border: 2px dashed var(--border);
-            border-radius: 14px;
-            padding: 30px 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-bottom: 20px;
-            background: #050505;
-        }
-        .dropzone:hover { border-color: #444; background: #070707; }
-        .dropzone-text {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            letter-spacing: 1px;
-        }
-
-        .preview-container {
-            display: none;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        .preview-container img {
-            max-width: 100%;
-            max-height: 220px;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-        }
-
-        .progress-box {
-            display: none;
-            margin-bottom: 20px;
-            text-align: center;
-            font-size: 0.85rem;
-            color: var(--accent-cyan);
-            letter-spacing: 1px;
-        }
-        .result-box {
-            display: none;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        .result-box img {
-            max-width: 100%;
-            max-height: 250px;
-            border-radius: 10px;
-            border: 1px solid var(--accent-cyan);
-        }
-
-        .action-submit-btn {
-            width: 100%;
-            background: #ffffff;
-            color: #030303;
-            border: none;
-            padding: 14px;
-            font-size: 0.8rem;
+        .brand-logo {
+            font-size: 1.1rem;
             letter-spacing: 3px;
             text-transform: uppercase;
             font-weight: 700;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s;
+            color: #fff;
+            background: linear-gradient(45deg, var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .action-submit-btn:hover { background: #e0e0e0; }
-        .action-submit-btn:disabled { background: #333; color: #666; cursor: not-allowed; }
+        .lang-options { display: flex; gap: 6px; }
+        .lang-btn {
+            background: #111118;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .lang-btn.active, .lang-btn:hover { color: #fff; border-color: var(--accent-cyan); background: #1a1a26; }
+
+        /* الشاشات */
+        .screen { display: none; }
+        .screen.active { display: block; }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+        p.desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        /* أزرار تسجيل الدخول الاجتماعي */
+        .social-login-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+        .social-btn {
+            width: 100%;
+            background: #111118;
+            border: 1px solid var(--border);
+            color: #fff;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: 0.3s;
+        }
+        .social-btn:hover { border-color: var(--border-hover); background: #161622; transform: translateY(-2px); }
+
+        /* النماذج وحقول الإدخال */
+        .form-group {
+            margin-bottom: 18px;
+            text-align: left;
+        }
+        label {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+        input, select {
+            width: 100%;
+            background: #050508;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 15px;
+            color: #fff;
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+        input:focus, select:focus { border-color: var(--accent-cyan); box-shadow: 0 0 15px rgba(0, 240, 255, 0.15); }
+
+        /* اختيار الأستاذ (Alex / Alexa) */
+        .tutors-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .tutor-card {
+            background: #050508;
+            border: 2px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .tutor-card.selected { border-color: var(--accent-cyan); background: #0b0b14; box-shadow: 0 0 20px rgba(0,240,255,0.2); }
+        .tutor-avatar { font-size: 2rem; margin-bottom: 8px; }
+        .tutor-name { font-size: 0.9rem; font-weight: 600; color: #fff; margin-bottom: 4px; }
+        .tutor-role { font-size: 0.7rem; color: var(--text-muted); }
+
+        .btn-main {
+            width: 100%;
+            background: #fff;
+            color: #030305;
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-main:hover { background: #d0d0d8; transform: translateY(-2px); }
+
+        /* واجهة المكالمة الصوتية */
+        .call-container {
+            text-align: center;
+            padding: 10px 0;
+        }
+        .orb-wave {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 30px auto;
+            background: radial-gradient(circle, var(--accent-cyan) 0%, #004d61 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            box-shadow: 0 0 40px rgba(0, 240, 255, 0.4);
+            position: relative;
+            transition: 0.3s;
+        }
+        .orb-wave.speaking {
+            animation: pulseWave 1.5s infinite alternate;
+        }
+        @keyframes pulseWave {
+            0% { transform: scale(1); box-shadow: 0 0 20px rgba(0,240,255,0.3); }
+            100% { transform: scale(1.08); box-shadow: 0 0 50px rgba(0,240,255,0.7); }
+        }
+        .call-status {
+            font-size: 0.85rem;
+            color: var(--accent-cyan);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+        .chat-transcript {
+            background: #050508;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 15px;
+            height: 120px;
+            overflow-y: auto;
+            text-align: left;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        .controls-flex {
+            display: flex;
+            gap: 10px;
+        }
+        .btn-mic {
+            flex: 2;
+            background: var(--accent-cyan);
+            color: #000;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+        }
+        .btn-mic.listening {
+            background: var(--accent-pink);
+            color: #fff;
+            animation: pulseMic 1s infinite;
+        }
+        @keyframes pulseMic { 0% { opacity: 0.8; } 50% { opacity: 1; } 100% { opacity: 0.8; } }
+        .btn-end {
+            flex: 1;
+            background: #ff3344;
+            color: #fff;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
     <div class="container">
         
-        <!-- شريط اللغات -->
-        <div class="lang-bar">
-            <button class="lang-btn active" onclick="setLanguage('en')">EN</button>
-            <button class="lang-btn" onclick="setLanguage('fr')">FR</button>
-            <button class="lang-btn" onclick="setLanguage('ar')">AR</button>
-        </div>
-
-        <!-- الهيدر -->
-        <div class="brand-header" id="brandHeader">
-            <h1 id="t-brand">NeuraFrame</h1>
-            <p id="t-subtitle">Advanced Neural Image Processing Matrix</p>
-        </div>
-
-        <!-- شبكة الأدوات -->
-        <div class="matrix-grid" id="matrixGrid">
-            <div class="matrix-node" onclick="launchWorkspace('bg')">
-                <div class="core-orb orb-cyan">✂️</div>
-                <div class="node-title" id="t-bg-title">BG Eraser</div>
-                <div class="node-desc" id="t-bg-desc">Isolate complex subjects instantly with algorithmic neural edge masking.</div>
-            </div>
-
-            <div class="matrix-node" onclick="launchWorkspace('upscale')">
-                <div class="core-orb orb-gold">⚡</div>
-                <div class="node-title" id="t-up-title">AI Upscale</div>
-                <div class="node-desc" id="t-up-desc">Reconstruct fine textures and maximize output resolution to 4K.</div>
-            </div>
-
-            <div class="matrix-node" onclick="launchWorkspace('gen')">
-                <div class="core-orb orb-purple">🔮</div>
-                <div class="node-title" id="t-gen-title">AI Genesis</div>
-                <div class="node-desc" id="t-gen-desc">Transform visual composition with contextual text guidance.</div>
+        <!-- شريط علوي -->
+        <div class="top-bar">
+            <div class="brand-logo">Polyglot AI</div>
+            <div class="lang-options">
+                <button class="lang-btn active" onclick="changeAppLang('en')">EN</button>
+                <button class="lang-btn" onclick="changeAppLang('fr')">FR</button>
+                <button class="lang-btn" onclick="changeAppLang('ar')">AR</button>
             </div>
         </div>
 
-        <!-- مساحة العمل -->
-        <div class="workspace" id="activeWorkspace">
-            <div class="workspace-top">
-                <span class="workspace-name" id="activeToolTitle">Workspace</span>
-                <button class="return-btn" onclick="closeWorkspace()" id="t-return">← Matrix</button>
-            </div>
-            <p id="activeToolDesc" style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 20px;"></p>
+        <!-- 1. شاشة تسجيل الدخول -->
+        <div class="screen active" id="screenLogin">
+            <h2 id="t-login-title">Welcome to Neural Academy</h2>
+            <p class="desc" id="t-login-desc">Sign in instantly to start your voice-immersed language journey.</p>
             
-            <!-- صندوق كتابة الأوامر (يظهر فقط في التوليد الذكي AI Genesis) -->
-            <div class="prompt-box" id="promptBox">
-                <textarea id="aiPromptInput" placeholder="Describe the image you want to generate (e.g., Cyberpunk city at night, cinematic lighting)..."></textarea>
+            <div class="social-login-grid">
+                <button class="social-btn" onclick="skipToProfile('Google')">
+                    <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.6l3.1-3.1C17.3 1.8 14.8 1 12 1 7.5 1 3.7 3.6 1.8 7.3l3.7 2.9C6.4 7.2 9 5 12 5z"/><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.8z"/><path fill="#FBBC05" d="M5.5 14.8c-.2-.8-.4-1.8-.4-2.8s.2-2 .4-2.8L1.8 6.3C.7 8.5 0 11.2 0 14s.7 5.5 1.8 7.7l3.7-2.9c-.3-.9-.5-1.9-.5-4z"/><path fill="#34A853" d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.6-2.2-6.5-5.2L1.8 16c1.9 3.7 5.7 7 10.2 7z"/></svg>
+                    <span id="t-google">Continue with Google</span>
+                </button>
+                <button class="social-btn" onclick="skipToProfile('Apple')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 5.35c.61-.75 1.03-1.8.92-2.85-.89.04-1.97.6-2.6 1.35-.57.67-1.08 1.74-.95 2.78 1 .08 2.02-.48 2.63-1.28z"/></svg>
+                    <span id="t-apple">Continue with Apple ID</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 2. شاشة الإعداد والبروفايل -->
+        <div class="screen" id="screenProfile">
+            <h2 id="t-prof-title">Personalize Your Teacher</h2>
+            <p class="desc" id="t-prof-desc">Tell us your goals so your personal AI professor can customize the conversation.</p>
+
+            <div class="form-group">
+                <label id="t-label-name">Your Full Name</label>
+                <input type="text" id="userName" placeholder="e.g. Wassim">
             </div>
 
-            <!-- زر رفع الملفات الخفي -->
-            <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="handleFileSelect(event)">
-
-            <div class="dropzone" id="dropzoneArea" onclick="document.getElementById('fileInput').click()">
-                <div class="dropzone-text" id="t-drop">Drop visual asset here or Click to Browse</div>
+            <div class="form-group">
+                <label id="t-label-age">Your Age</label>
+                <input type="number" id="userAge" placeholder="e.g. 22">
             </div>
 
-            <div class="preview-container" id="previewContainer">
-                <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px;" id="t-preview-label">Selected Asset:</p>
-                <img id="imagePreview" src="" alt="Preview">
+            <div class="form-group">
+                <label id="t-label-lang">Language You Want to Learn</label>
+                <select id="targetLang">
+                    <option value="en">English (الإنجليزية)</option>
+                    <option value="fr">French (الفرنسية)</option>
+                    <option value="es">Spanish (الإسبانية)</option>
+                    <option value="de">German (الألمانية)</option>
+                </select>
             </div>
 
-            <div class="progress-box" id="progressBox">
-                <span id="t-processing">Executing neural pipeline & rendering pixels...</span>
+            <div class="form-group">
+                <label id="t-label-level">Your Current Level</label>
+                <select id="userLevel">
+                    <option value="beginner" id="lvl-beg">Beginner (مبتدئ تماماً)</option>
+                    <option value="intermediate" id="lvl-int">Intermediate (متوسط)</option>
+                    <option value="advanced" id="lvl-adv">Advanced (متقدم)</option>
+                </select>
             </div>
 
-            <div class="result-box" id="resultBox">
-                <p style="font-size: 0.75rem; color: var(--accent-cyan); margin-bottom: 8px;" id="t-result-label">Generated Output Ready:</p>
-                <img id="resultImage" src="" alt="Result">
+            <label id="t-label-tutor" style="margin-top: 15px; margin-bottom: 8px;">Choose Your AI Professor</label>
+            <div class="tutors-grid">
+                <div class="tutor-card selected" id="cardAlex" onclick="selectTutor('Alex')">
+                    <div class="tutor-avatar">👨‍🏫</div>
+                    <div class="tutor-name">Alex</div>
+                    <div class="tutor-role" id="t-alex-role">Male Voice (Deep & Clear)</div>
+                </div>
+                <div class="tutor-card" id="cardAlexa" onclick="selectTutor('Alexa')">
+                    <div class="tutor-avatar">👩‍🏫</div>
+                    <div class="tutor-name">Alexa</div>
+                    <div class="tutor-role" id="t-alexa-role">Female Voice (Soft & Natural)</div>
+                </div>
             </div>
 
-            <button class="action-submit-btn" id="execBtn" onclick="executeProcess()" disabled>Execute Process</button>
+            <button class="btn-main" onclick="startCallSession()" id="t-start-btn">Start Voice Session</button>
+        </div>
+
+        <!-- 3. شاشة المكالمة الصوتية المباشرة -->
+        <div class="screen" id="screenCall">
+            <div class="call-container">
+                <div class="call-status" id="callStatusIndicator">Connected // Live AI Tutor</div>
+                
+                <div class="orb-wave" id="aiOrb">🎙️</div>
+                
+                <div class="chat-transcript" id="chatTranscript">
+                    <span id="initTranscriptMessage">Establishing secure neural audio bridge...</span>
+                </div>
+
+                <div class="controls-flex">
+                    <button class="btn-mic" id="micBtn" onclick="toggleSpeechRecognition()">
+                        <span id="t-mic-text">Hold to Speak</span>
+                    </button>
+                    <button class="btn-end" onclick="endCall()" id="t-end-btn">End</button>
+                </div>
+            </div>
         </div>
 
     </div>
 
     <script>
-        const translations = {
+        // نصوص اللغات المتعددة لواجهة الموقع
+        const uiText = {
             en: {
-                subtitle: "Advanced Neural Image Processing Matrix",
-                bgTitle: "BG Eraser",
-                bgDesc: "Isolate complex subjects instantly with algorithmic neural edge masking.",
-                upTitle: "AI Upscale",
-                upDesc: "Reconstruct fine textures and maximize output resolution to 4K.",
-                genTitle: "AI Genesis",
-                genDesc: "Transform visual composition with contextual text guidance.",
-                return: "← Matrix",
-                drop: "Drop visual asset here or Click to Browse",
-                promptPlaceholder: "Describe the image you want to generate (e.g., Cyberpunk futuristic luxury car)...",
-                preview: "Selected Asset:",
-                processing: "Executing neural pipeline & rendering output...",
-                result: "Generated Output Ready:",
-                exec: "Execute Process"
+                loginTitle: "Welcome to Neural Academy",
+                loginDesc: "Sign in instantly to start your voice-immersed language journey.",
+                google: "Continue with Google",
+                apple: "Continue with Apple ID",
+                profTitle: "Personalize Your Teacher",
+                profDesc: "Tell us your goals so your personal AI professor can customize the conversation.",
+                labelName: "Your Full Name",
+                labelAge: "Your Age",
+                labelLang: "Language You Want to Learn",
+                labelLevel: "Your Current Level",
+                lvlBeg: "Beginner (Absolute Zero)",
+                lvlInt: "Intermediate",
+                lvlAdv: "Advanced",
+                labelTutor: "Choose Your AI Professor",
+                alexRole: "Male Voice (Deep & Clear)",
+                alexaRole: "Female Voice (Soft & Natural)",
+                startBtn: "Start Voice Session",
+                micText: "Tap to Speak",
+                endBtn: "End"
             },
             fr: {
-                subtitle: "Matrice de Traitement d'Images Neurale Avancée",
-                bgTitle: "Gomme Arrière-plan",
-                bgDesc: "Isolez des sujets complexes instantanément avec un masquage neuronal.",
-                upTitle: "Mise à l'échelle IA",
-                upDesc: "Reconstruisez les textures fines et maximisez la résolution en 4K.",
-                genTitle: "Genèse IA",
-                genDesc: "Transformez la composition visuelle avec des instructions textuelles.",
-                return: "← Matrice",
-                drop: "Déposez l'élément ici ou cliquez pour parcourir",
-                promptPlaceholder: "Décrivez l'image que vous souhaitez générer...",
-                preview: "Actif sélectionné :",
-                processing: "Traitement en cours...",
-                result: "Sortie générée prête :",
-                exec: "Exécuter le Processus"
+                loginTitle: "Bienvenue à l'Académie Neurale",
+                loginDesc: "Connectez-vous instantanément pour commencer votre parcours.",
+                google: "Continuer avec Google",
+                apple: "Continuer avec Apple ID",
+                profTitle: "Personnalisez Votre Professeur",
+                profDesc: "Dites-nous vos objectifs pour adapter la conversation.",
+                labelName: "Votre Nom Complet",
+                labelAge: "Votre Âge",
+                labelLang: "Langue à Apprendre",
+                labelLevel: "Votre Niveau Actuel",
+                lvlBeg: "Débutant",
+                lvlInt: "Intermédiaire",
+                lvlAdv: "Avancé",
+                labelTutor: "Choisissez Votre Professeur IA",
+                alexRole: "Voix Masculine",
+                alexaRole: "Voix Féminine",
+                startBtn: "Démarrer la Session Vocale",
+                micText: "Appuyez pour Parler",
+                endBtn: "Fin"
             },
             ar: {
-                subtitle: "مصفوفة معالجة الصور بالذكاء الاصطناعي المتقدم",
-                bgTitle: "ممحاة الخلفية",
-                bgDesc: "عزل العناصر المعقدة فوراً باستخدام قناع حواف عصبي متطور.",
-                upTitle: "رفع الجودة بالذكاء الاصطناعي",
-                upDesc: "إعادة بناء التفاصيل الدقيقة ورفع الدقة حتى مستوى 4K.",
-                genTitle: "التوليد الذكي",
-                genDesc: "توليد وتعديل الصور باستخدام وصف نصي وأوامر دقيقة.",
-                return: "← القائمة",
-                drop: "اسحب الصورة هنا أو اضغط لاختيار صورة من هاتفك",
-                promptPlaceholder: "اكتب وصف الصورة التي تريد توليدها هنا (مثلاً: سيارة فاخرة في مدينة مستقبلية)...",
-                preview: "الصورة المحددة:",
-                processing: "جارِ تحليل الأمر وتوليد الصورة بالذكاء الاصطناعي...",
-                result: "النتيجة النهائية جاهزة:",
-                exec: "بدء التوليد / المعالجة"
+                loginTitle: "أهلاً بك في الأكاديمية الذكية",
+                loginDesc: "سجل دخولك فوراً وابدأ رحلة تعلم اللغة بالمحادثة الصوتية الواقعية.",
+                google: "المتابعة باستخدام قوقل",
+                apple: "المتابعة باستخدام أبل آي كلاود",
+                profTitle: "تخصيص أستاذك الذكي",
+                profDesc: "أدخل بياناتك لكي يتحدث معك الأستاذ بالطريقة التي تناسب مستواك تماماً.",
+                labelName: "اسمك الكريم",
+                labelAge: "عمرك",
+                labelLang: "اللغة التي تريد تعلمها",
+                labelLevel: "مستواك الحالي فيها",
+                lvlBeg: "مبتدئ تماماً",
+                lvlInt: "متوسط",
+                lvlAdv: "متقدم",
+                labelTutor: "اختر أستاذك الذكي (الصوت)",
+                alexRole: "صوت رجل (Alex)",
+                alexaRole: "صوت امرأة (Alexa)",
+                startBtn: "بدء المكالمة الصوتية الآن",
+                micText: "اضغط وتكلم الآن",
+                endBtn: "إنهاء"
             }
         };
 
-        let currentLang = 'en';
-        let activeToolKey = '';
-        let selectedImageUrl = '';
+        let currentAppLang = 'en';
+        let selectedTutor = 'Alex';
+        let userData = { name: '', age: '', lang: 'en', level: 'beginner' };
+        let recognition = null;
+        let isListening = false;
 
-        function setLanguage(lang) {
-            currentLang = lang;
-            const html = document.getElementById('htmlRoot');
-            html.setAttribute('lang', lang);
-            html.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
-
-            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+        function changeAppLang(lang) {
+            currentAppLang = lang;
+            document.getElementById('htmlRoot').setAttribute('lang', lang);
+            document.getElementById('htmlRoot').setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+            
+            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
             event.target.classList.add('active');
 
-            const t = translations[lang];
-            document.getElementById('t-subtitle').textContent = t.subtitle;
-            document.getElementById('t-bg-title').textContent = t.bgTitle;
-            document.getElementById('t-bg-desc').textContent = t.bgDesc;
-            document.getElementById('t-up-title').textContent = t.upTitle;
-            document.getElementById('t-up-desc').textContent = t.upDesc;
-            document.getElementById('t-gen-title').textContent = t.genTitle;
-            document.getElementById('t-gen-desc').textContent = t.genDesc;
-            document.getElementById('t-return').textContent = t.return;
-            document.getElementById('t-drop').textContent = t.drop;
-            document.getElementById('aiPromptInput').placeholder = t.promptPlaceholder;
-            document.getElementById('t-preview-label').textContent = t.preview;
-            document.getElementById('t-processing').textContent = t.processing;
-            document.getElementById('t-result-label').textContent = t.result;
-            
-            const execBtn = document.getElementById('execBtn');
-            if(!execBtn.disabled) execBtn.textContent = t.exec;
-
-            if (activeToolKey) {
-                updateWorkspaceTexts(activeToolKey);
-            }
+            const t = uiText[lang];
+            document.getElementById('t-login-title').textContent = t.loginTitle;
+            document.getElementById('t-login-desc').textContent = t.loginDesc;
+            document.getElementById('t-google').textContent = t.google;
+            document.getElementById('t-apple').textContent = t.apple;
+            document.getElementById('t-prof-title').textContent = t.profTitle;
+            document.getElementById('t-prof-desc').textContent = t.profDesc;
+            document.getElementById('t-label-name').textContent = t.labelName;
+            document.getElementById('t-label-age').textContent = t.labelAge;
+            document.getElementById('t-label-lang').textContent = t.labelLang;
+            document.getElementById('t-label-level').textContent = t.labelLevel;
+            document.getElementById('lvl-beg').textContent = t.lvlBeg;
+            document.getElementById('lvl-int').textContent = t.lvlInt;
+            document.getElementById('lvl-adv').textContent = t.lvlAdv;
+            document.getElementById('t-label-tutor').textContent = t.labelTutor;
+            document.getElementById('t-alex-role').textContent = t.alexRole;
+            document.getElementById('t-alexa-role').textContent = t.alexaRole;
+            document.getElementById('t-start-btn').textContent = t.startBtn;
+            document.getElementById('t-mic-text').textContent = t.micText;
+            document.getElementById('t-end-btn').textContent = t.endBtn;
         }
 
-        function launchWorkspace(toolKey) {
-            activeToolKey = toolKey;
-            document.getElementById('matrixGrid').style.display = 'none';
-            document.getElementById('brandHeader').style.display = 'none';
-            document.getElementById('activeWorkspace').style.display = 'block';
-            
-            // إعادة الضبط
-            document.getElementById('previewContainer').style.display = 'none';
-            document.getElementById('resultBox').style.display = 'none';
-            document.getElementById('progressBox').style.display = 'none';
-            document.getElementById('fileInput').value = '';
-            document.getElementById('aiPromptInput').value = '';
+        function skipToProfile(provider) {
+            document.getElementById('screenLogin').classList.remove('active');
+            document.getElementById('screenProfile').classList.add('active');
+        }
 
-            const promptBox = document.getElementById('promptBox');
-            const dropzone = document.getElementById('dropzoneArea');
-            const btn = document.getElementById('execBtn');
-
-            if (toolKey === 'gen') {
-                promptBox.style.display = 'block';
-                dropzone.style.display = 'none'; // التوليد الذكي لا يحتاج رفع صورة بل كتابة وصف
-                btn.disabled = false; // تفعيل الزر مباشرة لوجود صندوق الكتابة
+        function selectTutor(tutorName) {
+            selectedTutor = tutorName;
+            if(tutorName === 'Alex') {
+                document.getElementById('cardAlex').classList.add('selected');
+                document.getElementById('cardAlexa').classList.remove('selected');
             } else {
-                promptBox.style.display = 'none';
-                dropzone.style.display = 'block';
-                btn.disabled = true; // يتطلب رفع صورة أولاً
-            }
-
-            btn.textContent = translations[currentLang].exec;
-            updateWorkspaceTexts(toolKey);
-        }
-
-        function updateWorkspaceTexts(key) {
-            const t = translations[currentLang];
-            if (key === 'bg') {
-                document.getElementById('activeToolTitle').textContent = t.bgTitle;
-                document.getElementById('activeToolDesc').textContent = t.bgDesc;
-            } else if (key === 'upscale') {
-                document.getElementById('activeToolTitle').textContent = t.upTitle;
-                document.getElementById('activeToolDesc').textContent = t.upDesc;
-            } else if (key === 'gen') {
-                document.getElementById('activeToolTitle').textContent = t.genTitle;
-                document.getElementById('activeToolDesc').textContent = t.genDesc;
+                document.getElementById('cardAlexa').classList.add('selected');
+                document.getElementById('cardAlex').classList.remove('selected');
             }
         }
 
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    selectedImageUrl = e.target.result;
-                    document.getElementById('imagePreview').src = selectedImageUrl;
-                    document.getElementById('previewContainer').style.display = 'block';
-                    document.getElementById('resultBox').style.display = 'none';
-                    
-                    const btn = document.getElementById('execBtn');
-                    btn.disabled = false;
-                }
-                reader.readAsDataURL(file);
+        function startCallSession() {
+            userData.name = document.getElementById('userName').value.trim() || (currentAppLang === 'ar' ? 'صديقي' : 'Friend');
+            userData.age = document.getElementById('userAge').value.trim() || '20';
+            userData.lang = document.getElementById('targetLang').value;
+            userData.level = document.getElementById('userLevel').value;
+
+            document.getElementById('screenProfile').classList.remove('active');
+            document.getElementById('screenCall').classList.add('active');
+
+            // ترحيب أولي صوتي ونصي من الأستاذ (Alex / Alexa)
+            let welcomeText = "";
+            if(userData.lang === 'en') {
+                welcomeText = `Hello ${userData.name}! I am ${selectedTutor}, your personal AI language tutor. Let's start practicing English right now! Tell me, how was your day?`;
+            } else if(userData.lang === 'fr') {
+                welcomeText = `Bonjour ${userData.name}! Je suis ${selectedTutor}, votre professeur. Commençons à parler français. Comment s'est passée votre journée?`;
+            } else {
+                welcomeText = `¡Hola ${userData.name}! Soy ${selectedTutor}, tu profesor de español. ¡Empecemos a conversar!`;
             }
+
+            appendTranscript(selectedTutor, welcomeText);
+            speakText(welcomeText, userData.lang);
         }
 
-        function executeProcess() {
-            const btn = document.getElementById('execBtn');
-            btn.disabled = true;
-            document.getElementById('progressBox').style.display = 'block';
-            document.getElementById('resultBox').style.display = 'none';
-
-            setTimeout(() => {
-                document.getElementById('progressBox').style.display = 'none';
+        function speakText(text, langCode) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                let utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = langCode === 'en' ? 'en-US' : langCode === 'fr' ? 'fr-FR' : 'es-ES';
                 
-                if (activeToolKey === 'gen') {
-                    // توليد صورة حقيقية بالذكاء الاصطناعي بناءً على النص المدخل باستخدام محرك سحابي مجاني
-                    const userPrompt = document.getElementById('aiPromptInput').value.trim() || "futuristic abstract luxury design";
-                    const encodedPrompt = encodeURIComponent(userPrompt);
-                    const generatedUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=800&height=600&nologo=true`;
-                    document.getElementById('resultImage').src = generatedUrl;
-                } else {
-                    // للأدوات الأخرى (إزالة الخلفية / رفع الجودة) نعرض الصورة المعالجة مع تأثير بصري
-                    document.getElementById('resultImage').src = selectedImageUrl;
+                // اختيار صوت ذكي تناسبي حسب اختيار المستخدم (رجل أو امرأة)
+                let voices = window.speechSynthesis.getVoices();
+                if(voices.length > 0) {
+                    let filtered = voices.filter(v => v.lang.startsWith(langCode));
+                    if(selectedTutor === 'Alexa') {
+                        let femaleVoice = filtered.find(v => v.name.toLowerCase().includes('female') || v.name.toLowerCase().includes('zira') || v.name.toLowerCase().includes('google'));
+                        if(femaleVoice) utterance.voice = femaleVoice;
+                    } else {
+                        let maleVoice = filtered.find(v => v.name.toLowerCase().includes('male') || v.name.toLowerCase().includes('david') || v.name.toLowerCase().includes('george'));
+                        if(maleVoice) utterance.voice = maleVoice;
+                    }
                 }
 
-                document.getElementById('resultBox').style.display = 'block';
-                btn.disabled = false;
-                btn.textContent = currentLang === 'ar' ? 'تمت العملية بنجاح' : currentLang === 'fr' ? 'Succès' : 'Success';
-            }, 1800);
+                const orb = document.getElementById('aiOrb');
+                orb.classList.add('speaking');
+                utterance.onend = () => { orb.classList.remove('speaking'); };
+
+                window.speechSynthesis.speak(utterance);
+            }
         }
 
-        function closeWorkspace() {
-            activeToolKey = '';
-            document.getElementById('activeWorkspace').style.display = 'none';
-            document.getElementById('matrixGrid').style.display = 'grid';
-            document.getElementById('brandHeader').style.display = 'block';
+        function toggleSpeechRecognition() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                alert("Speech recognition is not supported on this browser. Try Chrome or Safari.");
+                return;
+            }
+
+            if (isListening) {
+                if(recognition) recognition.stop();
+                return;
+            }
+
+            recognition = new SpeechRecognition();
+            recognition.lang = userData.lang === 'en' ? 'en-US' : userData.lang === 'fr' ? 'fr-FR' : 'es-ES';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            const micBtn = document.getElementById('micBtn');
+
+            recognition.onstart = () => {
+                isListening = true;
+                micBtn.classList.add('listening');
+                micBtn.textContent = currentAppLang === 'ar' ? 'جارِ الاستماع...' : 'Listening...';
+            };
+
+            recognition.onresult = (event) => {
+                let speechResult = event.results[0][0].transcript;
+                appendTranscript(userData.name, speechResult);
+                processAIResponse(speechResult);
+            };
+
+            recognition.onerror = () => {
+                stopMicUI();
+            };
+
+            recognition.onend = () => {
+                stopMicUI();
+            };
+
+            recognition.start();
+        }
+
+        function stopMicUI() {
+            isListening = false;
+            const micBtn = document.getElementById('micBtn');
+            micBtn.classList.remove('listening');
+            micBtn.textContent = uiText[currentAppLang].micText;
+        }
+
+        function processAIResponse(userInput) {
+            // محاكاة رد ذكي وواقعي من الأستاذ (Alex / Alexa) لتصحيح النطق وتشجيع المحادثة
+            let reply = "";
+            let lower = userInput.toLowerCase();
+
+            if(userData.lang === 'en') {
+                if(lower.includes('good') || lower.includes('fine') || lower.includes('great')) {
+                    reply = `That's wonderful, ${userData.name}! Your pronunciation is getting better. Can you tell me what your favorite hobby is?`;
+                } else {
+                    reply = `I heard you say "${userInput}". Excellent effort! Remember to practice this phrase smoothly. What else would you like to discuss today?`;
+                }
+            } else if(userData.lang === 'fr') {
+                reply = `C'est très bien dit, ${userData.name}! Continuez ainsi. Parlons de vos projets pour demain?`;
+            } else {
+                reply = `¡Excelente, ${userData.name}! Tu pronunciación es muy buena. Cuéntame más.`;
+            }
+
+            appendTranscript(selectedTutor, reply);
+            speakText(reply, userData.lang);
+        }
+
+        function appendTranscript(sender, text) {
+            const transcript = document.getElementById('chatTranscript');
+            if(transcript.innerHTML.includes('Establishing')) {
+                transcript.innerHTML = '';
+            }
+            transcript.innerHTML += `<div style="margin-bottom: 8px;"><strong>${sender}:</strong> ${text}</div>`;
+            transcript.scrollTop = transcript.scrollHeight;
+        }
+
+        function endCall() {
+            if('speechSynthesis' in window) window.speechSynthesis.cancel();
+            if(recognition) recognition.stop();
+            document.getElementById('screenCall').classList.remove('active');
+            document.getElementById('screenProfile').classList.add('active');
         }
     </script>
 </body>
