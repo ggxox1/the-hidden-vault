@@ -1,420 +1,324 @@
-<html lang="en" dir="ltr" id="htmlRoot">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AuraSync // Neural Ambient & Mood Architecture</title>
+    <title>OmniAI Pro - منصة تحويل المحتوى الذكية</title>
     <style>
         :root {
-            --bg: #020205;
-            --card-bg: #08080f;
-            --border: #181824;
-            --border-hover: #35354d;
-            --text-main: #f0f0f5;
-            --text-muted: #707085;
-            --accent-cyan: #00f0ff;
-            --accent-purple: #9d4edd;
-            --accent-pink: #ff007f;
+            --bg-main: #18181b;
+            --bg-card: #27272a;
+            --bg-input: #09090b;
+            --accent: #d97706;
+            --accent-hover: #b45309;
+            --text-main: #f4f4f5;
+            --text-muted: #a1a1aa;
+            --border: #3f3f46;
+            --success: #22c55e;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
         body {
-            background-color: var(--bg);
+            background-color: var(--bg-main);
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            overflow-x: hidden;
-            transition: background 1s ease;
-        }
-        .container {
-            width: 100%;
-            max-width: 650px;
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 28px;
-            padding: 40px;
-            box-shadow: 0 40px 90px rgba(0,0,0,0.95);
-            position: relative;
         }
 
-        .top-bar {
+        header {
+            border-bottom: 1px solid var(--border);
+            padding: 1.2rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 18px;
+            background-color: rgba(24, 24, 27, 0.8);
+            backdrop-filter: blur(8px);
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
-        .brand-logo {
-            font-size: 1.1rem;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            font-weight: 800;
-            background: linear-gradient(45deg, var(--accent-cyan), var(--accent-purple));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .lang-options { display: flex; gap: 6px; }
-        .lang-btn {
-            background: #11111a;
-            border: 1px solid var(--border);
-            color: var(--text-muted);
-            padding: 5px 12px;
-            border-radius: 8px;
-            font-size: 0.7rem;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .lang-btn.active, .lang-btn:hover { color: #fff; border-color: var(--accent-cyan); background: #1a1a2b; }
 
-        .screen { display: none; }
-        .screen.active { display: block; }
-
-        h2 {
-            font-size: 1.6rem;
-            font-weight: 500;
-            margin-bottom: 10px;
-            letter-spacing: 1px;
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        p.desc {
+
+        .badge {
+            background-color: rgba(217, 119, 6, 0.15);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            padding: 4px 12px;
+            border-radius: 20px;
             font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 2.5rem auto;
+            padding: 0 1.2rem;
+            width: 100%;
+            flex: 1;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .hero h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.8rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .hero p {
             color: var(--text-muted);
-            margin-bottom: 25px;
+            font-size: 1.05rem;
             line-height: 1.6;
         }
 
-        .social-login-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-        .social-btn {
-            width: 100%;
-            background: #11111a;
+        .app-card {
+            background: var(--bg-card);
             border: 1px solid var(--border);
-            color: #fff;
-            padding: 15px;
-            border-radius: 14px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            transition: 0.3s;
-        }
-        .social-btn:hover { border-color: var(--border-hover); background: #161624; transform: translateY(-2px); }
-
-        .mood-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
-            margin-bottom: 25px;
-        }
-        .mood-card {
-            background: #040408;
-            border: 2px solid var(--border);
             border-radius: 16px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: 0.3s;
+            padding: 2rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
         }
-        .mood-card:hover, .mood-card.selected { border-color: var(--accent-cyan); background: #0c0c17; box-shadow: 0 0 25px rgba(0,240,255,0.15); }
-        .mood-icon { font-size: 2rem; margin-bottom: 8px; }
-        .mood-title { font-size: 0.9rem; font-weight: 600; color: #fff; }
 
         .form-group {
-            margin-bottom: 20px;
-            text-align: left;
+            margin-bottom: 1.5rem;
         }
+
         label {
             display: block;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-bottom: 8px;
+            margin-bottom: 0.6rem;
+            font-weight: 600;
+            font-size: 0.95rem;
         }
+
+        select, textarea {
+            width: 100%;
+            padding: 0.9rem;
+            background-color: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text-main);
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        select:focus, textarea:focus {
+            border-color: var(--accent);
+        }
+
         textarea {
-            width: 100%;
-            background: #040408;
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 15px;
-            color: #fff;
-            font-size: 0.95rem;
-            height: 110px;
-            resize: none;
-            transition: 0.3s;
-        }
-        textarea:focus { border-color: var(--accent-cyan); box-shadow: 0 0 20px rgba(0,240,255,0.15); }
-
-        .btn-main {
-            width: 100%;
-            background: #fff;
-            color: #020205;
-            border: none;
-            padding: 16px;
-            border-radius: 14px;
-            font-size: 0.85rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .btn-main:hover { background: #d0d0dc; transform: translateY(-2px); }
-
-        .aura-container {
-            text-align: center;
-            padding: 10px 0;
-        }
-        .aura-orb {
-            width: 140px;
             height: 140px;
-            border-radius: 50%;
-            margin: 30px auto;
-            background: radial-gradient(circle, var(--accent-cyan) 0%, #002b3d 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3.5rem;
-            box-shadow: 0 0 60px rgba(0, 240, 255, 0.4);
-            animation: floatOrb 4s infinite alternate ease-in-out;
+            resize: vertical;
+            line-height: 1.5;
         }
-        @keyframes floatOrb {
-            0% { transform: translateY(0) scale(1); }
-            100% { transform: translateY(-10px) scale(1.05); }
-        }
-        .insight-box {
-            background: #040408;
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 20px;
-            font-size: 0.95rem;
-            color: #fff;
-            margin-bottom: 25px;
-            line-height: 1.7;
-            text-align: center;
-        }
-        .btn-reset {
-            background: #11111a;
-            color: var(--text-muted);
-            border: 1px solid var(--border);
-            padding: 12px 25px;
-            border-radius: 12px;
-            font-size: 0.8rem;
+
+        .btn-generate {
+            width: 100%;
+            padding: 1rem;
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
             cursor: pointer;
-            transition: 0.3s;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
         }
-        .btn-reset:hover { color: #fff; border-color: var(--accent-pink); }
+
+        .btn-generate:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .result-box {
+            margin-top: 2rem;
+            padding: 1.2rem;
+            background-color: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .btn-copy {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 5px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .btn-copy:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .result-content {
+            white-space: pre-wrap;
+            line-height: 1.7;
+            font-size: 1rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: auto;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 1.7rem; }
+            .app-card { padding: 1.2rem; }
+        }
     </style>
 </head>
 <body>
 
+    <header>
+        <div class="logo">⚡ OmniAI Pro</div>
+        <div class="badge" id="creditCount">المتبقي: 5 محاولات مجانية</div>
+    </header>
+
     <div class="container">
-        
-        <div class="top-bar">
-            <div class="brand-logo">AuraSync</div>
-            <div class="lang-options">
-                <button class="lang-btn active" onclick="changeAppLang('en')">EN</button>
-                <button class="lang-btn" onclick="changeAppLang('fr')">FR</button>
-                <button class="lang-btn" onclick="changeAppLang('ar')">AR</button>
-            </div>
+        <div class="hero">
+            <h1>فكرة واحدة.. محتوى شامل لكافة المنصات</h1>
+            <p>أداة الذكاء الاصطناعي الأسرع لصناع المحتوى، المسوقين، وأصحاب الأعمال</p>
         </div>
 
-        <div class="screen active" id="screenLogin">
-            <h2 id="t-login-title">Synchronize Your Inner Aura</h2>
-            <p class="desc" id="t-login-desc">Connect securely to calibrate your digital environment with your emotional frequency.</p>
-            
-            <div class="social-login-grid">
-                <button class="social-btn" onclick="goToMood()">
-                    <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.6l3.1-3.1C17.3 1.8 14.8 1 12 1 7.5 1 3.7 3.6 1.8 7.3l3.7 2.9C6.4 7.2 9 5 12 5z"/><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.8z"/><path fill="#FBBC05" d="M5.5 14.8c-.2-.8-.4-1.8-.4-2.8s.2-2 .4-2.8L1.8 6.3C.7 8.5 0 11.2 0 14s.7 5.5 1.8 7.7l3.7-2.9c-.3-.9-.5-1.9-.5-4z"/><path fill="#34A853" d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.6-2.2-6.5-5.2L1.8 16c1.9 3.7 5.7 7 10.2 7z"/></svg>
-                    <span id="t-google">Continue with Google</span>
-                </button>
-                <button class="social-btn" onclick="goToMood()">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 5.35c.61-.75 1.03-1.8.92-2.85-.89.04-1.97.6-2.6 1.35-.57.67-1.08 1.74-.95 2.78 1 .08 2.02-.48 2.63-1.28z"/></svg>
-                    <span id="t-apple">Continue with Apple ID</span>
-                </button>
-            </div>
-        </div>
-
-        <div class="screen" id="screenMood">
-            <h2 id="t-mood-title">Select Your Current Frequency</h2>
-            <p class="desc" id="t-mood-desc">Choose how you feel right now to tailor your personal resonance field.</p>
-
-            <div class="mood-grid">
-                <div class="mood-card selected" id="cardDeep" onclick="selectMood('deep')">
-                    <div class="mood-icon">🌌</div>
-                    <div class="mood-title" id="m-deep">Deep Focus (تركيز عميق)</div>
-                </div>
-                <div class="mood-card" id="cardCalm" onclick="selectMood('calm')">
-                    <div class="mood-icon">🍃</div>
-                    <div class="mood-title" id="m-calm">Absolute Calm (هدوء تام)</div>
-                </div>
-                <div class="mood-card" id="cardEnergy" onclick="selectMood('energy')">
-                    <div class="mood-icon">⚡</div>
-                    <div class="mood-title" id="m-energy">High Energy (طاقة وإبداع)</div>
-                </div>
-                <div class="mood-card" id="cardReflect" onclick="selectMood('reflect')">
-                    <div class="mood-icon">🔮</div>
-                    <div class="mood-title" id="m-reflect">Reflection (تأمل وراحة)</div>
-                </div>
+        <div class="app-card">
+            <div class="form-group">
+                <label for="contentType">1. اختر نوع المحتوى المطلوب إنشاءه:</label>
+                <select id="contentType">
+                    <option value="linkedin">منشور احترافي لـ LinkedIn</option>
+                    <option value="twitter">سلسلة تغريدات (Twitter/X Thread)</option>
+                    <option value="email">بريد إلكتروني تسويقي للعملاء</option>
+                    <option value="product">وصف منتج لـ متجر إلكتروني (SEO)</option>
+                </select>
             </div>
 
             <div class="form-group">
-                <label id="t-label-thought">Your Current Intention or Thought</label>
-                <textarea id="userThought" placeholder="Write what's on your mind... e.g. Building a great future step by step."></textarea>
+                <label for="userInput">2. أدخل الفكرة أو النص الأساسي:</label>
+                <textarea id="userInput" placeholder="مثال: أثر استخدام أجهزة الذكاء الاصطناعي في تحسين الإنتاجية والتسويق الرقمي..."></textarea>
             </div>
 
-            <button class="btn-main" onclick="launchAura()" id="t-launch-btn">Calibrate Aura</button>
-        </div>
+            <button class="btn-generate" onclick="generateContent()">
+                <span>توليد المحتوى بذكاء</span> ✨
+            </button>
 
-        <div class="screen" id="screenAura">
-            <div class="aura-container">
-                <div class="aura-orb" id="orbIcon">🌌</div>
-                
-                <div class="insight-box" id="insightText">
-                    Calibrating neural resonance field based on your current state...
+            <div id="resultBox" class="result-box">
+                <div class="result-header">
+                    <span>النتيجة جاهزة للنشر:</span>
+                    <button class="btn-copy" onclick="copyResult()" id="copyBtn">📋 نسخ النص</button>
                 </div>
-
-                <button class="btn-reset" onclick="resetAura()" id="t-reset-btn">Recalibrate Aura</button>
+                <div class="result-content" id="resultText"></div>
             </div>
         </div>
-
     </div>
 
+    <footer>
+        جميع الحقوق محفوظة © 2026 OmniAI Engine • مصممة للعمل على كافة الأجهزة
+    </footer>
+
     <script>
-        const uiText = {
-            en: {
-                loginTitle: "Synchronize Your Inner Aura",
-                loginDesc: "Connect securely to calibrate your digital environment with your emotional frequency.",
-                google: "Continue with Google",
-                apple: "Continue with Apple ID",
-                moodTitle: "Select Your Current Frequency",
-                moodDesc: "Choose how you feel right now to tailor your personal resonance field.",
-                mDeep: "Deep Focus",
-                mCalm: "Absolute Calm",
-                mEnergy: "High Energy",
-                mReflect: "Reflection",
-                labelThought: "Your Current Intention or Thought",
-                launchBtn: "Calibrate Aura",
-                resetBtn: "Recalibrate Aura"
-            },
-            fr: {
-                loginTitle: "Synchronisez Votre Aura Intérieure",
-                loginDesc: "Connectez-vous pour calibrer votre environnement numérique.",
-                google: "Continuer avec Google",
-                apple: "Continuer avec Apple ID",
-                moodTitle: "Sélectionnez Votre Fréquence",
-                moodDesc: "Choisissez votre état actuel pour adapter votre espace.",
-                mDeep: "Focus Profond",
-                mCalm: "Calme Absolu",
-                mEnergy: "Haute Énergie",
-                mReflect: "Réflexion",
-                labelThought: "Votre Pensée ou Intention",
-                launchBtn: "Calibrer l'Aura",
-                resetBtn: "Recalibrer"
-            },
-            ar: {
-                loginTitle: "وازن مجالك الداخلي (AuraSync)",
-                loginDesc: "سجل دخولك لربط بيئتك الرقمية بترددك النفسي والذهني الحالي.",
-                google: "المتابعة باستخدام قوقل",
-                apple: "المتابعة باستخدام أبل آي كلاود",
-                moodTitle: "اختر حالتك وترددك الحالي",
-                moodDesc: "حدد شعورك الآن ليقوم النظام بتكييف المساحة الرقمية خصيصاً لك.",
-                mDeep: "تركيز عميق (Deep Focus)",
-                mCalm: "هدوء وسكينة (Absolute Calm)",
-                mEnergy: "طاقة وإبداع (High Energy)",
-                mReflect: "تأمل ووعي (Reflection)",
-                labelThought: "أكتب فكرتك أو نيتك اللحظية",
-                launchBtn: "تفعيل المجال الذكي",
-                resetBtn: "إعادة ضبط المجال"
-            }
-        };
+        let credits = 5;
 
-        let currentAppLang = 'en';
-        let selectedMood = 'deep';
+        function generateContent() {
+            const input = document.getElementById('userInput').value.trim();
+            const type = document.getElementById('contentType').value;
+            const resultBox = document.getElementById('resultBox');
+            const resultText = document.getElementById('resultText');
+            const creditBadge = document.getElementById('creditCount');
 
-        function changeAppLang(lang) {
-            currentAppLang = lang;
-            document.getElementById('htmlRoot').setAttribute('lang', lang);
-            document.getElementById('htmlRoot').setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
-            
-            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
-
-            const t = uiText[lang];
-            document.getElementById('t-login-title').textContent = t.loginTitle;
-            document.getElementById('t-login-desc').textContent = t.loginDesc;
-            document.getElementById('t-google').textContent = t.google;
-            document.getElementById('t-apple').textContent = t.apple;
-            document.getElementById('t-mood-title').textContent = t.moodTitle;
-            document.getElementById('t-mood-desc').textContent = t.moodDesc;
-            document.getElementById('m-deep').textContent = t.mDeep;
-            document.getElementById('m-calm').textContent = t.mCalm;
-            document.getElementById('m-energy').textContent = t.mEnergy;
-            document.getElementById('m-reflect').textContent = t.mReflect;
-            document.getElementById('t-label-thought').textContent = t.labelThought;
-            document.getElementById('t-launch-btn').textContent = t.launchBtn;
-            document.getElementById('t-reset-btn').textContent = t.resetBtn;
-        }
-
-        function goToMood() {
-            document.getElementById('screenLogin').classList.remove('active');
-            document.getElementById('screenMood').classList.add('active');
-        }
-
-        function selectMood(mood) {
-            selectedMood = mood;
-            document.querySelectorAll('.mood-card').forEach(c => c.classList.remove('selected'));
-            document.getElementById('card' + mood.charAt(0).toUpperCase() + mood.slice(1)).classList.add('selected');
-        }
-
-        function launchAura() {
-            const thought = document.getElementById('userThought').value.trim();
-            document.getElementById('screenMood').classList.remove('active');
-            document.getElementById('screenAura').classList.add('active');
-
-            const orb = document.getElementById('orbIcon');
-            const insight = document.getElementById('insightText');
-
-            let icon = '🌌';
-            let message = '';
-
-            if (selectedMood === 'deep') {
-                icon = '🌌';
-                message = currentAppLang === 'ar' ? 
-                    `✨ مجالك المهيأ: التركيز العميق.\n"الوضوح الذهني يبدأ بإقصاء المشتتات والتركيز على نقطة واحدة."\n${thought ? 'فكرتك المسجلة: "' + thought + '" تتوافق تماماً مع نسق الإنتاج العالي.' : ''}` :
-                    `✨ Deep Focus Aura Active.\n"Clarity comes from removing the non-essential."\n${thought ? 'Your intention: "' + thought + '" aligns with high productivity.' : ''}`;
-            } else if (selectedMood === 'calm') {
-                icon = '🍃';
-                message = currentAppLang === 'ar' ? 
-                    `🍃 مجالك المهيأ: الهدوء التام.\n"تنفس بعمق، أنت في المكان والزمان المناسبين تماماً."\n${thought ? 'رؤيتك: "' + thought + '" تحمل طاقة سلام داخلي عالية.' : ''}` :
-                    `🍃 Absolute Calm Aura Active.\n"Breathe in peace, exhale tension."\n${thought ? 'Your thought: "' + thought + '" resonates with serenity.' : ''}`;
-            } else if (selectedMood === 'energy') {
-                icon = '⚡';
-                message = currentAppLang === 'ar' ? 
-                    `⚡ مجالك المهيأ: الطاقة العالية والإبداع.\n"الشغف هو الوقود الذي يترجم الأفكار إلى واقع ملموس."\n${thought ? 'شحنتك الفكرية: "' + thought + '" جاهزة للإطلاق والتنفيذ.' : ''}` :
-                    `⚡ High Energy Aura Active.\n"Passion is the fuel of monumental action."\n${thought ? 'Your drive: "' + thought + '" is fully charged.' : ''}`;
-            } else {
-                icon = '🔮';
-                message = currentAppLang === 'ar' ? 
-                    `🔮 مجالك المهيأ: التأمل والوعي العميق.\n"التأمل في التفاصيل يصنع الرؤى الاستثنائية."\n${thought ? 'تأملك: "' + thought + '" يعكس عمقاً فكرياً مميزاً.' : ''}` :
-                    `🔮 Reflection Aura Active.\n"Contemplation births extraordinary insights."\n${thought ? 'Your reflection: "' + thought + '" shows profound depth.' : ''}`;
+            if (!input) {
+                alert('الرجاء كتابة الفكرة أو النص الأولية أولاً!');
+                return;
             }
 
-            orb.textContent = icon;
-            insight.innerText = message;
+            if (credits <= 0) {
+                alert('لقد استنفدت رصيد المحاولات المجانية لهذا اليوم!');
+                return;
+            }
+
+            resultBox.style.display = 'block';
+            resultText.innerText = 'جاري التفكير وصياغة المحتوى بأفضل أسلوب... ⏳';
+
+            // محاكاة توليد الذكاء الاصطناعي (يمكن ربطها مستقبلاً بـ API حقيقي)
+            setTimeout(() => {
+                let generatedOutput = "";
+
+                if (type === 'linkedin') {
+                    generatedOutput = `💡 **رؤية في مجال الأعمال:**\n\n${input}\n\n📌 **أهم 3 نقاط رئيسية:**\n1. مواكبة التقنيات الحديثة يختصر 50% من الوقت.\n2. التركيز على جودة القيمة المتقدمة للعميل.\n3. التطوير المستمر هو أصل الاستدامة.\n\nهل تتفق مع هذه الرؤية؟ شاركنا رأيك في التعليقات! 👇\n\n#أعمال #ذكاء_اصطناعي #ريادة_الأعمال #تطوير`;
+                } else if (type === 'twitter') {
+                    generatedOutput = `🧵 [سلسلة تغريدات]\n\n1/4 حول موضوع: ${input}\nإليكم الخلاصة بأبسط صورة 👇\n\n2/4 البداية دائماً تبدأ من فهم المشكلة بشكل دقيق وتحديد الأدوات المناسبة للحل.\n\n3/4 التطبيق العملي يمنحك التغذية الراجعة السريعة للتطوير.\n\n4/4 إن أعجبك Thread لا تنسَ إعادت تغريده لتعم الفائدة 🔄`;
+                } else if (type === 'email') {
+                    generatedOutput = `الموضوع: فرصة مميزة للنمو والتطوير 🚀\n\nأهلاً بك،\n\nنود أن نشاركك اليوم فكرة قد تحدث فارقاً حقيقياً في عملك:\n\n"${input}"\n\nإذا كنت ترغب في معرفة كيف يمكنك تطبيق ذلك خطوة بخطوة، يسعدنا تواصلك معنا مباشرة.\n\nتحياتنا،\nفريق العمل`;
+                } else if (type === 'product') {
+                    generatedOutput = `🌟 **الخيار الأمثل لاحتياجاتك!**\n\nاحصل على أفضل تجربة مع المنتج المصمم خصيصاً ليمنحك التفوق.\n\n🔹 **المميزات:**\n- ${input}\n- جودة عالية وضمان متكامل.\n- سهولة في الاستخدام والتطبيق.\n\n🛒 **اطلبه الآن واستفد من العرض الخصم المتاح لفترة محدودة!**`;
+                }
+
+                resultText.innerText = generatedOutput;
+                credits--;
+                creditBadge.innerText = `المتبقي: ${credits} محاولات مجانية`;
+            }, 1200);
         }
 
-        function resetAura() {
-            document.getElementById('screenAura').classList.remove('active');
-            document.getElementById('screenMood').classList.add('active');
+        function copyResult() {
+            const text = document.getElementById('resultText').innerText;
+            const copyBtn = document.getElementById('copyBtn');
+
+            if (!text || text.includes('جاري التفكير')) return;
+
+            navigator.clipboard.writeText(text).then(() => {
+                copyBtn.innerText = '✅ تم النسخ!';
+                copyBtn.style.color = 'var(--success)';
+                setTimeout(() => {
+                    copyBtn.innerText = '📋 نسخ النص';
+                    copyBtn.style.color = 'var(--text-main)';
+                }, 2000);
+            });
         }
     </script>
 </body>
